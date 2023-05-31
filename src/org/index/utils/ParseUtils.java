@@ -277,6 +277,7 @@ public class ParseUtils
                 .replaceAll(" ", "")
                 .replaceAll("_", "")
                 .replaceAll("-", "")
-                .trim().toLowerCase(Locale.ROOT);
+                .replaceAll("\0", "")   // replace all null values
+                .trim().strip().toLowerCase(Locale.ROOT);
     }
 }

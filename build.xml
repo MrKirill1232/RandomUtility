@@ -26,7 +26,7 @@
         <mkdir dir="${dist}/"/>
 
         <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-        <jar jarfile="${dist}/RandomUtilities_v1.02.jar" basedir="${build}" />
+        <jar jarfile="${dist}/RandomUtilities_v1.03.jar" basedir="${build}" />
     </target>
 
     <target name="remove_build_folder">
