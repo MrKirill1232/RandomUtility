@@ -61,7 +61,15 @@ public class ParseUtils
     {
         try
         {
-            if (lookingObject instanceof final Integer integerValue)
+            if (lookingObject instanceof final Byte byteValue)
+            {
+                return byteValue.intValue();
+            }
+            else if (lookingObject instanceof final Short shortValue)
+            {
+                return shortValue.intValue();
+            }
+            else if (lookingObject instanceof final Integer integerValue)
             {
                 return integerValue.intValue();
             }
@@ -83,7 +91,19 @@ public class ParseUtils
     {
         try
         {
-            if (lookingObject instanceof final Long longValue)
+            if (lookingObject instanceof final Byte byteValue)
+            {
+                return byteValue.longValue();
+            }
+            else if (lookingObject instanceof final Short shortValue)
+            {
+                return shortValue.longValue();
+            }
+            else if (lookingObject instanceof final Integer integerValue)
+            {
+                return integerValue.longValue();
+            }
+            else if (lookingObject instanceof final Long longValue)
             {
                 return longValue.longValue();
             }

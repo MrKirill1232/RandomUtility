@@ -1,5 +1,7 @@
 package org.index.network;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -8,12 +10,12 @@ import java.util.Arrays;
  */
 public class NetworkWriter
 {
-    private byte[] _byteArray;
+    private final ByteArrayOutputStream _byteArray;
     private boolean _reverseBytes = true;
 
     public NetworkWriter()
     {
-        _byteArray = new byte[0];
+        _byteArray = new ByteArrayOutputStream();
     }
 
     public void reverseBytes(boolean value)
@@ -26,7 +28,7 @@ public class NetworkWriter
         final ByteBuffer buf = ByteBuffer.allocate(Character.BYTES);
         buf.putChar(value);
         buf.rewind();
-        _byteArray = concentrateArrays(_byteArray, buf.array());
+        writeOrHandleException(buf.array());
     }
 
     public void writeByte(int value)
@@ -34,7 +36,7 @@ public class NetworkWriter
         final ByteBuffer buf = ByteBuffer.allocate(Byte.BYTES);
         buf.put(0, (byte) value);
         buf.rewind();
-        _byteArray = concentrateArrays(_byteArray, buf.array());
+        writeOrHandleException(buf.array());
     }
 
     public void writeShort(int value)
@@ -42,7 +44,7 @@ public class NetworkWriter
         final ByteBuffer buf = ByteBuffer.allocate(Short.BYTES);
         buf.putShort(0, (short) value);
         buf.rewind();
-        _byteArray = concentrateArrays(_byteArray, reverseByteArray(buf.array()));
+        writeOrHandleException(reverseByteArray(buf.array()));
     }
 
     public void writeInt(int value)
@@ -50,7 +52,7 @@ public class NetworkWriter
         final ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES);
         buf.putInt(0, value);
         buf.rewind();
-        _byteArray = concentrateArrays(_byteArray, reverseByteArray(buf.array()));
+        writeOrHandleException(reverseByteArray(buf.array()));
     }
 
     public void writeLong(long value)
@@ -58,7 +60,7 @@ public class NetworkWriter
         final ByteBuffer buf = ByteBuffer.allocate(Long.BYTES);
         buf.putLong(0, value);
         buf.rewind();
-        _byteArray = concentrateArrays(_byteArray, reverseByteArray(buf.array()));
+        writeOrHandleException(reverseByteArray(buf.array()));
     }
 
     public void writeFloat(float value)
@@ -66,7 +68,7 @@ public class NetworkWriter
         final ByteBuffer buf = ByteBuffer.allocate(Float.BYTES);
         buf.putFloat(0, value);
         buf.rewind();
-        _byteArray = concentrateArrays(_byteArray, reverseByteArray(buf.array()));
+        writeOrHandleException(reverseByteArray(buf.array()));
     }
 
     public void writeDouble(double value)
@@ -74,7 +76,7 @@ public class NetworkWriter
         final ByteBuffer buf = ByteBuffer.allocate(Double.BYTES);
         buf.putDouble(0, value);
         buf.rewind();
-        _byteArray = concentrateArrays(_byteArray, reverseByteArray(buf.array()));
+        writeOrHandleException(reverseByteArray(buf.array()));
     }
 
     public void writeBoolean(boolean value)
@@ -89,18 +91,30 @@ public class NetworkWriter
 
     public byte[] getWrittenBytes()
     {
-        return Arrays.copyOf(_byteArray, _byteArray.length);
+        return Arrays.copyOf(_byteArray.toByteArray(), _byteArray.size());
     }
 
-    private static byte[] concentrateArrays(byte[] inputArray, byte[] additionalArray)
+    private void writeOrHandleException(byte[] inputArray)
     {
-        byte[] result = new byte[inputArray.length + additionalArray.length];
-
-        System.arraycopy(inputArray, 0, result, 0, inputArray.length);
-        System.arraycopy(additionalArray, 0, result, inputArray.length, additionalArray.length);
-
-        return result;
+        try
+        {
+            _byteArray.write(inputArray);
+        }
+        catch (IOException ioE)
+        {
+            ioE.printStackTrace();
+        }
     }
+
+//    private static byte[] concentrateArrays(byte[] inputArray, byte[] additionalArray)
+//    {
+//        byte[] result = new byte[inputArray.length + additionalArray.length];
+//
+//        System.arraycopy(inputArray, 0, result, 0, inputArray.length);
+//        System.arraycopy(additionalArray, 0, result, inputArray.length, additionalArray.length);
+//
+//        return result;
+//    }
 
     private byte[] reverseByteArray(byte[] inputArray)
     {
