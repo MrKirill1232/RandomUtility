@@ -78,6 +78,11 @@ public class StatSet
         return false;
     }
 
+    public String getString(String key, String defaultValue)
+    {
+        return ParseUtils.parseString(getOrNull(key), defaultValue);
+    }
+
     public boolean getBoolean(String key, boolean defaultValue)
     {
         return ParseUtils.parseBoolean(getOrNull(key), defaultValue);

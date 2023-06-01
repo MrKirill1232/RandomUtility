@@ -3,6 +3,7 @@
         Random Utility build config
     </description>
     <!-- set global properties for this build -->
+    <property name="debug" location="true"/>
     <property name="src" location="src"/>
     <property name="build" location="build"/>
     <property name="dist" location="dist"/>

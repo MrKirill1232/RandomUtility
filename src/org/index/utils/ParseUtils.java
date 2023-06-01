@@ -4,12 +4,45 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.StringJoiner;
 
 /**
  * @author Index
  */
 public class ParseUtils
 {
+    public static String parseString(Object lookingObject)
+    {
+        return parseString(lookingObject, null);
+    }
+
+    public static String parseString(Object lookingObject, String defaultValue)
+    {
+        if (lookingObject == null)
+        {
+            return defaultValue;
+        }
+        try
+        {
+            if (lookingObject instanceof final String inputString)
+            {
+                return inputString;
+            }
+            else if (lookingObject instanceof final CharSequence inputCharSequence)
+            {
+                return inputCharSequence.toString();
+            }
+            else if (lookingObject instanceof final StringJoiner inputJoiner)
+            {
+                return inputJoiner.toString();
+            }
+            return String.valueOf(lookingObject);
+        }
+        catch (Exception e)
+        {
+            return defaultOrThrow("String value required, but found: ", lookingObject, defaultValue);
+        }
+    }
 
     public static boolean parseBoolean(Object lookingObject)
     {
