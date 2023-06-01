@@ -2,6 +2,8 @@ package org.index.commons;
 
 import org.index.utils.ParseUtils;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +22,26 @@ public class StatSet
     public StatSet()
     {
         _availableStatSet = new HashMap<>();
+    }
+
+    public StatSet(ResultSet resultSet)
+    {
+        final Map<String, Object> stringObjectMap = new HashMap<>();
+        try
+        {
+            final ResultSetMetaData metaData = resultSet.getMetaData();
+            for (int index = 1; index <= metaData.getColumnCount(); index++)
+            {
+                final String key = metaData.getCatalogName(index);
+                final Object value = resultSet.getObject(key);
+                stringObjectMap.put(key, value);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        _availableStatSet = Collections.unmodifiableMap(stringObjectMap);
     }
 
     public <K, V> StatSet(Map<K, V> initialMap)
