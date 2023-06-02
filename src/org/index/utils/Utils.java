@@ -43,4 +43,19 @@ public class Utils
             return defaultValue;
         }
     }
+
+    public static long roundByNormal(double value)
+    {
+        return Math.round(value);
+    }
+
+    public static long roundToLowest(double value)
+    {
+        return Integer.parseInt(String.valueOf(value).split(",")[0]);
+    }
+
+    public static long roundToHigher(double value)
+    {
+        return (long) Math.ceil(value);
+    }
 }

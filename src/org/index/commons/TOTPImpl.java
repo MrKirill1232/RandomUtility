@@ -1,6 +1,9 @@
 package org.index.commons;
 
 import org.index.crypt.Base32;
+import org.index.crypt.Base64;
+import org.index.enums.otp.BaseCryptType;
+import org.index.enums.otp.SHACryptType;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -15,9 +18,30 @@ public class TOTPImpl
     public static final String TEST_SITE = "https://totp.danhersam.com/";
     public static final String TEST_KEY = "KEUPRXB4NNE3WWEP5MAMNGP5SFMT5SL3";
 
+    private BaseCryptType _baseType;
+    private SHACryptType _SHAType;
+    private int _keyLength;
+
     public TOTPImpl()
     {
+        _baseType = BaseCryptType.BASE32;
+        _SHAType = SHACryptType.SHA001;
+        _keyLength = 20;
+    }
 
+    public void setBaseCryptType(BaseCryptType type)
+    {
+        _baseType = type;
+    }
+
+    public void setSHACryptType(SHACryptType type)
+    {
+        _SHAType = type;
+    }
+
+    public void setSecurityKeyLength(int size)
+    {
+        _keyLength = size;
     }
 
     /**
@@ -75,14 +99,15 @@ public class TOTPImpl
 
     private String generateSecurityCode()
     {
-        // 32 symbols key
-        final byte[] securityBytes = Rnd.getSecureBytes(20);
-        return Base32.encode(securityBytes);
+        final int length = _baseType == BaseCryptType.BASE32 ? Base32.getByteLengthForBaseCrypt(_keyLength) : Base64.getByteLengthForBaseCrypt(_keyLength);
+        // generating security key
+        final byte[] securityBytes = Rnd.getSecureBytes(length);
+        return _baseType == BaseCryptType.BASE32 ? Base32.encode(securityBytes) : Base64.encode(securityBytes);
     }
 
     private byte[] decodeSecurityCode(String securityKey)
     {
-        return Base32.decode(securityKey);
+        return _baseType == BaseCryptType.BASE32 ? Base32.decode(securityKey) : Base64.decode(securityKey);
     }
 
     private long getPeriod()
@@ -95,8 +120,8 @@ public class TOTPImpl
     {
         try
         {
-            SecretKeySpec signKey = new SecretKeySpec(decodedSecurityKey, "HmacSHA1");
-            Mac mac = Mac.getInstance("HmacSHA1");
+            SecretKeySpec signKey = new SecretKeySpec(decodedSecurityKey, _SHAType.getHmac());
+            Mac mac = Mac.getInstance(_SHAType.getHmac());
             mac.init(signKey);
             return mac.doFinal(ByteBuffer.allocate(Long.BYTES).putLong(timePeriod).array());
         }

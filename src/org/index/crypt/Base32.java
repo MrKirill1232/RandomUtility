@@ -1,5 +1,7 @@
 package org.index.crypt;
 
+import org.index.utils.Utils;
+
 /**
  * @author Index
  */
@@ -54,5 +56,10 @@ public class Base32
             }
         }
         return data;
+    }
+
+    public static int getByteLengthForBaseCrypt(int requiredLength)
+    {
+        return (int) Utils.roundToHigher((((double) requiredLength) * 5d) / 8d);
     }
 }
