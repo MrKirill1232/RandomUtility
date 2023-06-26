@@ -12,11 +12,12 @@ public class Cryptor311
     public static String _key = "HIhiHIYoMan~";
 
     private final DesCrypter _decryptor;
+    private final DesCrypter _encryptor;
 
     public Cryptor311()
     {
         _decryptor = new DesCrypter(_key.getBytes(StandardCharsets.UTF_8), true);
-
+        _encryptor = new DesCrypter(_key.getBytes(StandardCharsets.UTF_8), false);
     }
 
     public byte[] decrypt(byte[] inputArray)
@@ -26,7 +27,6 @@ public class Cryptor311
 
     public byte[] encrypt(byte[] inputArray)
     {
-        System.err.println("You cannot encode it without private key!");
-        return new byte[0];
+        return _encryptor.updateSequence(inputArray);
     }
 }

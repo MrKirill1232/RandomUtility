@@ -47,11 +47,11 @@ public class ReplayFile
         final float y = _replayContent.readFloat();
         final float z = _replayContent.readFloat();
         final float h = _replayContent.readFloat();
-        final int unkInt01 = _replayContent.readInt();
-        final int unkInt02 = _replayContent.readInt();
-        final int minutes = _replayContent.readByte();
-        final int hours = _replayContent.readByte();
-        final int unkInt03 = _replayContent.readInt();
+        final int unkInt01 = _replayContent.readInt();  // hour
+        final int unkInt02 = _replayContent.readInt();  // min
+        final int minutes = _replayContent.readByte();  // sec
+        final int hours = _replayContent.readByte();    // in camera mode
+        final int unkInt03 = _replayContent.readInt();  // is fp mode
         final long endReplayTime = _replayContent.readLong();
         final int unk11 = _replayContent.readInt();
         final int unk12 = _replayContent.readInt();
