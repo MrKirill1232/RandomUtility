@@ -9,6 +9,7 @@ import org.index.utils.Utils;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Locale;
 
 /**
  * @author Index
@@ -24,7 +25,6 @@ public class ReplayFile
         final int cryptVersion = getCryptVersion(fileAsArray);
         final byte[] decodedFile = decodeFile(fileAsArray, cryptVersion);
         _replayContent = new NetworkReader(decodedFile);
-
         readHeader(inputFile.getName(), cryptVersion);
         readPackets();
         readCameraMoving();
@@ -112,13 +112,15 @@ public class ReplayFile
         return new byte[0];
     }
 
-    private static byte[] decodeFile(byte[] originalByteArray,int cryptVersion)
+    private static byte[] decodeFile(byte[] originalByteArray, int cryptVersion)
     {
         final byte[] replayContentByte;
         if (cryptVersion == 311)
         {
+            final byte[] inputArray = new byte[originalByteArray.length - 28];
+            System.arraycopy(originalByteArray, 28, inputArray, 0, inputArray.length);
             final Cryptor311 cryptor = new Cryptor311();
-            replayContentByte = cryptor.decrypt(originalByteArray);
+            replayContentByte = cryptor.decrypt(inputArray);
             System.out.println(Utils.ANSI_YELLOW + ReplayFile.class.getSimpleName() + ": Replay file has " + cryptVersion + " crypt version;");
         }
         else if (cryptVersion == -1)
@@ -139,11 +141,11 @@ public class ReplayFile
         // LINEAGE311 with nulls
         final byte[] headerArray = new byte[28];
         System.arraycopy(originalByteArray, 0, headerArray, 0, headerArray.length);
-        final String header = ParseUtils.normilizeString(new String(headerArray));
+        final String header = ParseUtils.normilizeString(new String(headerArray)).toLowerCase(Locale.ROOT);
         int cryptVersion = -1;
         try
         {
-            return Integer.parseInt(header.replaceAll("Lineage2Ver", ""));
+            return Integer.parseInt(header.replaceAll("lineage2ver", ""));
         }
         catch (NumberFormatException e)
         {

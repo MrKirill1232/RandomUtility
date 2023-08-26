@@ -25,7 +25,7 @@ public class NetworkReader
 
     public int readByte()
     {
-        return _byteArray[_position.getAndIncrement()] & 0xf;
+        return _byteArray[_position.getAndIncrement()];
     }
 
     public int readChar()
@@ -139,7 +139,7 @@ public class NetworkReader
             throw new IllegalArgumentException("No presented class for header size! Presented size is " + headerClass.getSimpleName() + ";");
         }
         // total byte array will include this "byte" to array
-        return readBytes(arraySize - 1);
+        return readBytes((arraySize));
     }
 
     public int getAvailableBytes()
