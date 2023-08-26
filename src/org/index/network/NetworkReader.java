@@ -25,7 +25,7 @@ public class NetworkReader
 
     public int readByte()
     {
-        return _byteArray[_position.getAndIncrement()];
+        return _byteArray[_position.getAndIncrement()] & 0xFF;
     }
 
     public int readChar()
