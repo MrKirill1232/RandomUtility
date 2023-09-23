@@ -1,5 +1,10 @@
 package org.index.utils;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Index
  */
@@ -58,4 +63,77 @@ public class Utils
     {
         return (long) Math.ceil(value);
     }
+
+    public static String joinStrings(String glueStr, Object array)
+    {
+        return joinStrings(glueStr, array, 0, -1);
+    }
+
+    public static String joinStrings(String glueStr, Object array, int startIdx)
+    {
+        return joinStrings(glueStr, array, startIdx, -1);
+    }
+
+    public static String joinStrings(String glueStr, Object array, int startIdx, int maxCount)
+    {
+        try
+        {
+            int length = Array.getLength(array);
+            StringBuilder result = new StringBuilder();
+            if (startIdx < 0)
+            {
+                startIdx += length;
+                if (startIdx < 0)
+                {
+                    return EMPTY_STRING;
+                }
+            }
+            while(startIdx < length && maxCount != 0)
+            {
+                if(!result.isEmpty() && glueStr != null && !glueStr.isEmpty())
+                {
+                    result.append(glueStr);
+                }
+                result.append(Array.get(array, startIdx++));
+                maxCount--;
+            }
+            return result.toString();
+        }
+        catch (Exception ignored)
+        {
+        }
+        return EMPTY_STRING;
+    }
+
+    public static <T> boolean removeValueFromMap(Map<?, T> inputMap, T lookingObject)
+    {
+        boolean isRemoved = false;
+        for (Map.Entry<?, T> entry : Map.copyOf(inputMap).entrySet())
+        {
+            if (lookingObject.equals(entry.getValue()))
+            {
+                isRemoved = true;
+                inputMap.remove(entry.getKey());
+            }
+        }
+        return isRemoved;
+    }
+
+    public static <T> boolean removeListValueFromCollection(Collection<List<T>> inputCollection, T lookingObject)
+    {
+        boolean isRemoved = false;
+        for (List<T> values : inputCollection)
+        {
+            for (T value : List.copyOf(values))
+            {
+                if (lookingObject.equals(value))
+                {
+                    isRemoved = true;
+                    values.remove(value);
+                }
+            }
+        }
+        return isRemoved;
+    }
+
 }

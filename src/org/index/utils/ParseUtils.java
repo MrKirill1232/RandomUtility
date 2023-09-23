@@ -236,7 +236,7 @@ public class ParseUtils
         {
             if (lookingObject.getClass() == String.class)
             {
-                String lookingObjectAsString = normilizeString(String.valueOf(lookingObject));
+                String lookingObjectAsString = normilizeString(String.valueOf(lookingObject), false, false);
                 if (lookingObjectAsString.startsWith("[") && lookingObjectAsString.endsWith("]"))
                 {
                     lookingObjectAsString = lookingObjectAsString.substring(1, lookingObjectAsString.length() - 1);
@@ -287,6 +287,30 @@ public class ParseUtils
         }
     }
 
+    public static int[] parseIntArray(Object lookingObject, int[] defaultValue)
+    {
+        final String[] splited = parseStringArray(lookingObject, null);
+        if (splited == null)
+        {
+            return defaultOrThrow("Integer array required, but found: ", lookingObject, defaultValue);
+        }
+        final int[] returnArray = new int[splited.length];
+        for (int index = 0; index < splited.length; index++)
+        {
+            int value;
+            try
+            {
+                value = parseInteger(splited[index], null);
+            }
+            catch (IllegalArgumentException npe)
+            {
+                continue;
+            }
+            returnArray[index] = value;
+        }
+        return returnArray;
+    }
+
     private static <T> T defaultOrThrow(String throwString, Object lookingObject, T defaultValue)
     {
         if (defaultValue == null)
@@ -298,19 +322,27 @@ public class ParseUtils
 
     public static String normilizeString(String inputString)
     {
+        return normilizeString(inputString, true, true);
+    }
+
+    public static String normilizeString(String inputString, boolean replaceSpace, boolean toLowerCase)
+    {
         if (inputString == null || inputString.isEmpty() || inputString.isBlank())
         {
             return "";
         }
-        return inputString
+        final String returnString = inputString
                 .replaceAll("\n", "")
                 .replaceAll("\t", "")
-                .replaceAll("&nbsp", "")
                 .replaceAll("\r", "")
-                .replaceAll(" ", "")
                 .replaceAll("_", "")
                 .replaceAll("-", "")
-                .replaceAll("\0", "")   // replace all null values
-                .trim().strip().toLowerCase(Locale.ROOT);
+                .replaceAll(replaceSpace ? " " : "", "")
+                .replaceAll("\0", replaceSpace ? "" : " ")   // replace all null values
+                .replaceAll("&nbsp", replaceSpace ? "" : " ")
+                .trim().strip();
+        return toLowerCase
+                ? returnString.toLowerCase(Locale.ROOT)
+                : returnString;
     }
 }

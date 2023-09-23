@@ -55,6 +55,22 @@ public class StatSet
         }
     }
 
+    public boolean contains(String key)
+    {
+        return _availableStatSet.containsKey(key);
+    }
+
+    @Deprecated
+    public boolean set(String key, Object value)
+    {
+        return addValue(key, value);
+    }
+
+    public boolean isEmpty()
+    {
+        return _availableStatSet.isEmpty();
+    }
+
     public boolean addValue(String key, Object value)
     {
         return _availableStatSet.put(key, value) != null;
